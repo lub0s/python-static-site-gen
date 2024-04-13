@@ -9,6 +9,7 @@ from utils import extract_markdown_images
 from utils import extract_markdown_links
 from utils import split_nodes_image
 from utils import text_to_textnodes
+from utils import markdown_to_blocks
 
 class TestUtils(unittest.TestCase):
 
@@ -96,3 +97,16 @@ class TestUtils(unittest.TestCase):
     ]
 
     self.assertEqual(text_to_textnodes(text), expected)
+
+  def test_markdown_to_blocks(self):
+    markdown = """# This is a heading
+
+This is a paragraph of text. It has some **bold** and *italic* words inside of it.
+
+* This is a list item
+* This is another list item
+      """
+
+    blocks = markdown_to_blocks(markdown)
+
+    self.assertEqual(len(blocks), 3)
