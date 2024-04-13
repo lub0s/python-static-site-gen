@@ -2,12 +2,9 @@ import re
 
 from textnode import TextNode
 from leafnode import LeafNode
-from block_types import block_type_paragraph
-from block_types import block_type_code
-from block_types import block_type_quote
-from block_types import block_type_ulist
-from block_types import block_type_list
-from block_types import block_type_heading
+from htmlnode import HTMLNode
+from parentnode import ParentNode
+from leafnode import LeafNode
 
 def text_node_to_html_node(text_node):
   if not isinstance(text_node, TextNode): raise Exception("Can only convert TextNode")
@@ -90,19 +87,3 @@ def text_to_textnodes(text):
   images = split_nodes_image(codes)
   links = split_nodes_link(images)
   return links 
-
-def markdown_to_blocks(markdown):
-  blocks = []
-  splits = markdown.split('\n\n')
-  for split in splits:
-    blocks.append(split.lstrip().rstrip()) 
-  return blocks
-
-def block_to_block_type(markdown_block):
-  # Headings start with 1-6 # characters
-  if markdown_block[0:1] == "# ":
-    return block_type_heading
-  
-  if markdown[0:2] == "```":
-    return block_type_code
-  
