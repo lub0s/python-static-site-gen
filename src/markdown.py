@@ -1,3 +1,5 @@
+import re
+
 from htmlnode import HTMLNode
 from parentnode import ParentNode
 from leafnode import LeafNode
@@ -65,14 +67,14 @@ def quote_block_to_html_node(markdown):
 
 def ul_block_to_html_node(markdown):
   children = []
-  for line in markdown:
+  for line in markdown.split('\n'):
     children.append(LeafNode('li', line))
   return LeafNode('ul', children)
 
 def list_block_to_html_node(markdown):
   children = []
-  for line in markdown:
-    children.append(LeafNode('li', line))
+  for line in markdown.split('\n'):
+    children.append(LeafNode('li', re.sub(r'\b\d+\.', "", line).strip()))
   return ParentNode('ol', children)
   
 def paragraph_block_to_html_node(markdown):

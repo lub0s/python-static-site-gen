@@ -16,3 +16,6 @@ def generate_page(from_path, template_path, dest_path):
       
       with open(dest_path, 'w') as destination_file:
         destination_file.write(replaced)
+
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+  pass
