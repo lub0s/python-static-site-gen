@@ -35,3 +35,14 @@ This is a paragraph of text. It has some **bold** and *italic* words inside of i
     expected = [block_types.block_type_heading, block_types.block_type_paragraph, block_types.block_type_paragraph]
 
     self.assertEqual(types, expected)
+
+  def test_markdown_to_html_node(self):
+    markdown = """# This is a heading
+
+This is a paragraph of text. It has some **bold** and *italic* words inside of it.
+
+* This is a list item
+* This is another list item
+      """
+      
+      
