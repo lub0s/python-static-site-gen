@@ -7,7 +7,8 @@ from parentnode import ParentNode
 from leafnode import LeafNode
 
 def text_node_to_html_node(text_node):
-  if not isinstance(text_node, TextNode): raise Exception("Can only convert TextNode")
+  if not isinstance(text_node, TextNode): 
+    raise Exception("Can only convert TextNode")
   return text_node.to_html()
 
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
@@ -55,7 +56,7 @@ def split_nodes_image(old_nodes):
       rest_of_the_text = rest_of_the_text.replace(f"![{found_image[0]}]({found_image[1]})", "")
       result.append(TextNode(split, "text"))
       result.append(TextNode(found_image[0], "image", found_image[1]))
-  if len(rest_of_the_text) != 0:
+    if len(rest_of_the_text) != 0:
       result.append(TextNode(rest_of_the_text, 'text'))
   return result
 
@@ -87,3 +88,7 @@ def text_to_textnodes(text):
   images = split_nodes_image(codes)
   links = split_nodes_link(images)
   return links 
+
+def text_to_htmlnodes(text):
+  text_nodes = text_to_textnodes(text)
+  return list(map(lambda tn: tn.to_html(), text_nodes))

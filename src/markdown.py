@@ -7,6 +7,8 @@ from block_types import block_type_quote
 from block_types import block_type_ulist
 from block_types import block_type_list
 from block_types import block_type_heading
+from utils import text_to_textnodes
+from utils import text_to_htmlnodes
 
 def markdown_to_blocks(markdown):
   blocks = []
@@ -17,30 +19,26 @@ def markdown_to_blocks(markdown):
 
 def block_to_block_type(markdown_block):
   # Headings start with 1-6 # characters
-  if markdown_block.startswith('# '):
-    return block_type_heading
-  if markdown_block.startswith('## '):
-    return block_type_heading
-  if markdown_block.startswith('### '):
-    return block_type_heading
-  if markdown_block.startswith('#### '):
-    return block_type_heading
-  if markdown_block.startswith('##### '):
-    return block_type_heading
-  if markdown_block.startswith('###### '):
-    return block_type_heading
+  if (markdown_block.startswith('# ') or 
+      markdown_block.startswith('## ') or 
+      markdown_block.startswith('### ') or 
+      markdown_block.startswith('#### ') or 
+      markdown_block.startswith('##### ') or 
+      markdown_block.startswith('###### ')
+      ): return block_type_heading
   
-  if markdown_block.startswith("```"):
+  if markdown_block.startswith("```") and markdown_block.endswith('```'):
     return block_type_code
   
-  if all(line.startswith('>') for line in markdown_block.split()):
+  lines = markdown_block.split('\n')
+  
+  if all(line.startswith('> ') for line in lines):
     return block_type_quote
   
-  if all((line.startswith('*') or line.startswith('-')) for line in markdown_block.split()):
+  if all((line.startswith('*') or line.startswith('-')) for line in lines):
     return block_type_ulist
   
   is_list = False
-  lines = markdown_block.split()
   for line in range(0, len(lines)):
     is_list = lines[line].startswith(f'{line + 1}. ')
 
@@ -50,15 +48,20 @@ def block_to_block_type(markdown_block):
   return block_type_paragraph
 
 def heading_block_to_html_node(markdown):
-  # count
-  # tag
-  return LeafNode('h1', markdown)
+  count = 0
+  for char in markdown:
+    if char == '#': count += 1
+    else: break
+  
+  return LeafNode(f'h{count}', markdown[count:].strip())
 
 def code_block_to_html_node(markdown):
-  return ParentNode('pre', [LeafNode('code', markdown,)])
+  stripped = markdown.lstrip('```').rstrip('```')
+  return ParentNode('pre', [LeafNode('code', stripped,)])
 
 def quote_block_to_html_node(markdown):
-  return LeafNode('blockquote', markdown)
+  lines = list(map(lambda l: LeafNode('p',l.lstrip('> ')), markdown.split('\n')))
+  return ParentNode('blockquote', lines)
 
 def ul_block_to_html_node(markdown):
   children = []
@@ -73,7 +76,8 @@ def list_block_to_html_node(markdown):
   return ParentNode('ol', children)
   
 def paragraph_block_to_html_node(markdown):
-  return LeafNode('p', markdown)
+  html_nodes = text_to_htmlnodes(markdown)
+  return ParentNode('p', html_nodes)
   
 def markdown_to_html_node(markdown):
   blocks = markdown_to_blocks(markdown)
@@ -100,5 +104,5 @@ def markdown_to_html_node(markdown):
 def extract_title(markdown):
   for line in markdown.split('\n'):
     if line.startswith('# '):
-      return line
+      return heading_block_to_html_node(line).to_html()
   raise Exception('All pages need a single h1 header.')

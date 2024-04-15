@@ -12,8 +12,8 @@ class TextNode:
     if self.text_type == "bold": return LeafNode("b", self.text)
     if self.text_type == "italic": return LeafNode("i", self.text)
     if self.text_type == "code": return LeafNode("code", self.text)
-    if self.text_type == "link": return LeafNode("b", self.text, { "href": self.href  })
-    if self.text_type == "image": return LeafNode("img", None, { "src" : self.href, "alt": self.text})
+    if self.text_type == "link": return LeafNode("a", self.text, { "href": self.url  })
+    if self.text_type == "image": return LeafNode("img", "", { "src" : self.url, "alt": self.text})
     else: raise Exception(f"unknown text_type: {self.text_type}")
 
   def __eq__(self, other):
