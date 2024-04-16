@@ -55,7 +55,7 @@ def heading_block_to_html_node(markdown):
     if char == '#': count += 1
     else: break
 
-  html_nodes = text_to_htmlnodes( markdown[count:].strip())
+  html_nodes = text_to_htmlnodes(markdown[count:].strip())
   return ParentNode(f'h{count}', html_nodes)
 
 def code_block_to_html_node(markdown):
